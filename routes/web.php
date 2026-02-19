@@ -2,12 +2,20 @@
 
 use Illuminate\Support\Facades\Route;
 
-/* Route::get('/', function () {
+Route::get('/', function () {
     return view('welcome');
-}); */
+});
 
 
-use App\Http\Controllers\AuthController;
+Route::get('/clear-cache', function () {
+    \Artisan::call('optimize:clear');
+    return 'Cache cleared!';
+});
 
-Route::get('/', [AuthController::class, 'showLogin']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::get('/test', function (Request $request) {
+    return response()->json([
+        'message' => 'API is working!',
+        'server_time' => now()->toDateTimeString(),
+        'environment' => app()->environment(),
+    ]);
+});

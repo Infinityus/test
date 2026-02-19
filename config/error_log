@@ -1,0 +1,4 @@
+[16-Feb-2026 11:34:04 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/vmmbiwkw/blog.affiliatemadi.com/config/app.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/vmmbiwkw/blog.affiliatemadi.com/config/app.php on line 16

@@ -1,0 +1,10 @@
+[18-Feb-2026 12:56:11 Asia/Kolkata] PHP Fatal error:  A void function must not return a value in /home/vmmbiwkw/blog.affiliatemadi.com/app/Models/Device.php on line 116
+[18-Feb-2026 12:56:18 Asia/Kolkata] PHP Fatal error:  A void function must not return a value in /home/vmmbiwkw/blog.affiliatemadi.com/app/Models/Device.php on line 116
+[18-Feb-2026 12:56:49 Asia/Kolkata] PHP Fatal error:  A void function must not return a value in /home/vmmbiwkw/blog.affiliatemadi.com/app/Models/Device.php on line 116
+[18-Feb-2026 08:21:57 UTC] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in /home/vmmbiwkw/blog.affiliatemadi.com/bootstrap/app.php on line 19
+[18-Feb-2026 08:22:05 UTC] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in /home/vmmbiwkw/blog.affiliatemadi.com/bootstrap/app.php on line 19
+[18-Feb-2026 08:22:37 UTC] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in /home/vmmbiwkw/blog.affiliatemadi.com/bootstrap/app.php on line 19
+[18-Feb-2026 08:23:05 UTC] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in /home/vmmbiwkw/blog.affiliatemadi.com/bootstrap/app.php on line 19
+[18-Feb-2026 08:26:23 UTC] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in /home/vmmbiwkw/blog.affiliatemadi.com/bootstrap/app.php on line 19
+[18-Feb-2026 08:26:26 UTC] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in /home/vmmbiwkw/blog.affiliatemadi.com/bootstrap/app.php on line 19
+[18-Feb-2026 08:29:37 UTC] PHP Parse error:  syntax error, unexpected token "<", expecting end of file in /home/vmmbiwkw/blog.affiliatemadi.com/bootstrap/app.php on line 19
