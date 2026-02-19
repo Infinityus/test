@@ -43,12 +43,12 @@ return [
             'transaction_mode' => 'DEFERRED',
         ],
 
-        'mysql' => [
+        'mysql' => [ // ← this is blog_db (default)
             'driver' => 'mysql',
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'laravel'),
+            'database' => env('DB_DATABASE', 'blog_db'),
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
@@ -62,6 +62,16 @@ return [
                 (PHP_VERSION_ID >= 80500 ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+
+        /* 'vidya' => [  // ← second connection = vidya_db
+            'driver'    => 'mysql',
+            'host'      => env('DB_VIDYA_HOST', '127.0.0.1'),
+            'port'      => env('DB_VIDYA_PORT', '3306'),
+            'database'  => env('DB_VIDYA_DATABASE', 'vidya_db'),
+            'username'  => env('DB_VIDYA_USERNAME'),
+            'password'  => env('DB_VIDYA_PASSWORD'),
+            // same charset, collation etc. as mysql
+        ], */
 
         'mariadb' => [
             'driver' => 'mariadb',
@@ -148,7 +158,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 
