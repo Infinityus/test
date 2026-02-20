@@ -25,6 +25,7 @@ Route::prefix('v2')->group(function () {
     Route::post('/verify-otp', [OtpController::class, 'verifyOtp']);
     
     Route::post('/verify-session', [AuthController::class, 'verifySession'])->middleware('auth:sanctum');
+    Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
     
     Route::get('/test', function (Request $request) {
         return response()->json([
