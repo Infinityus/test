@@ -361,6 +361,10 @@ class OtpController extends Controller
 
         // Optional: Add welcome bonus for new users
         // $this->addWelcomeBonusIfNewUser($user, $wallet);
+        Log::info('new-token', [
+            '$token' => $token,
+            'time' => now()->format('Y-m-d H:i:s')
+        ]);
 
         return response()->json([
             'success' => true,

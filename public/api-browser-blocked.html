@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - API Only</title>
+    <style>
+        body { 
+            font-family: system-ui, sans-serif; 
+            background: #0d1117; 
+            color: #e6edf3; 
+            text-align: center; 
+            padding: 100px 20px; 
+            margin: 0;
+        }
+        h1 { color: #ff6b6b; margin-bottom: 10px; }
+        .container { max-width: 700px; margin: 0 auto; }
+        .code { 
+            background: #161b22; 
+            padding: 25px; 
+            border-radius: 10px; 
+            margin: 30px 0; 
+            font-family: monospace; 
+            font-size: 1.1em;
+        }
+        .note { color: #8b949e; margin-top: 40px; font-size: 1em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Access Denied</h1>
+        <p>This is an <strong>API endpoint</strong> — not meant to be opened in a web browser.</p>
+        
+        <div class="code">
+            Use the mobile app, Postman, Insomnia, or cURL.<br><br>
+            Supported methods: POST, PUT, DELETE<br>
+            Browser GET requests are blocked for security reasons.
+        </div>
+
+        <p class="note">
+            Developers: Send proper JSON body with POST method.<br>
+            Example: POST /api/v2/verify-otp with {"mobile":"9515267091","otp":"1234"}
+        </p>
+    </div>
+</body>
+</html>
