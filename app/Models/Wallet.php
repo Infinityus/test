@@ -20,15 +20,17 @@ class Wallet extends Model
         'total_withdrawn',
         'pending_withdrawal',
         'available_balance',
+        'next_payout',
         'currency'
     ];
 
     protected $casts = [
-        'life_time_earing' => 'decimal:2', // Changed from 'balance'
-        'total_earned' => 'decimal:2',
-        'total_withdrawn' => 'decimal:2',
-        'pending_withdrawal' => 'decimal:2',
-        'available_balance' => 'decimal:2',
+        'life_time_earing' => 'decimal:0', // Changed from 'balance'
+        'total_earned' => 'decimal:0',
+        'total_withdrawn' => 'decimal:0',
+        'pending_withdrawal' => 'decimal:0',
+        'available_balance' => 'decimal:0',
+        'next_payout' => 'datetime',
     ];
 
     /**
@@ -55,12 +57,13 @@ class Wallet extends Model
         return self::firstOrCreate(
             ['user_id' => $userId],
             [
-                'life_time_earing' => 0.00, // Changed from 'balance'
-                'total_earned' => 0.00,
-                'total_withdrawn' => 0.00,
-                'pending_withdrawal' => 0.00,
-                'available_balance' => 0.00,
-                'currency' => 'INR' // Changed to INR
+                'life_time_earing' => 0, // Changed from 'balance'
+                'total_earned' => 0,
+                'total_withdrawn' => 0,
+                'pending_withdrawal' => 0,
+                'available_balance' => 0,
+                'currency' => 'INR', // Changed to INR
+                'next_payout' => now()->addDays(30)
             ]
         );
     }

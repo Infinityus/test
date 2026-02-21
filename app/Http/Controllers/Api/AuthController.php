@@ -212,12 +212,19 @@ class AuthController extends Controller
     public function user(Request $request): JsonResponse
     {
         $user = $request->user();
+        
+        // Trim the name: take first word only and limit to 24 characters
+        $nameParts = explode(' ', trim($user->name));
+        $firstName = $nameParts[0]; // Get first word
+        
+        // Limit to 24 characters
+        $trimmedName = substr($firstName, 0, 24);
 
         return response()->json([
             'success' => true,
             'data' => [
-                'id' => $user->id,
-                'name' => $user->name,
+                //'id' => $user->id,
+                'name' => $trimmedName,
                 'mobile' => $user->mobile,
                 'status' => $user->status,
                 'device_name' => $user->device_name,
