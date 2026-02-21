@@ -5,6 +5,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\WalletController;
+use App\Http\Controllers\Api\CertificateController;
+use App\Http\Controllers\Api\PublishController;
+use App\Http\Controllers\Api\AdminAuthController;
+use App\Http\Controllers\Api\AutoBlogController;
 use Carbon\Carbon;
 
 
@@ -76,39 +80,45 @@ Route::prefix('wallet')->middleware('auth:sanctum')->group(function () {
     Route::get('/transactions', [WalletController::class, 'transactions']);
 });
 
-/*// In routes/api.php, update your fallback route:
-Route::fallback(function (Request $request) {
-    // Only handle GET requests to API routes
-    if ($request->isMethod('get') && $request->is('api/*')) {
-        // Return 403 Forbidden with JSON response
-        return response()->json([
-            'success' => false,
-            'message' => 'Access denied. API endpoints cannot be accessed via browser.'
-        ], 403); // Changed from 405 to 403
-    }
+// Certificate routes (protected)
+Route::prefix('certificates')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [CertificateController::class, 'index']);
+    Route::get('/{id}', [CertificateController::class, 'show']);
+    Route::post('/', [CertificateController::class, 'store']); // Admin only
+    Route::put('/{id}/status', [CertificateController::class, 'updateStatus']); // Admin only
+});
+
+// Publish routes (protected)
+Route::prefix('publishes')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [PublishController::class, 'index']);
+    Route::get('/analytics', [PublishController::class, 'analytics']);
+    Route::get('/{id}', [PublishController::class, 'show']);
+    Route::post('/', [PublishController::class, 'store']);
+    Route::put('/{id}/status', [PublishController::class, 'updateStatus']);
+    Route::post('/{id}/views', [PublishController::class, 'incrementViews']);
+});
+
+// Auto Blog routes (protected)
+Route::prefix('blog')->middleware('auth:sanctum')->group(function () {
+    Route::get('/next-pending', [AutoBlogController::class, 'nextPending']);
+    Route::get('/history', [AutoBlogController::class, 'userHistory']);
+    Route::get('/{id}', [AutoBlogController::class, 'show']);
+    Route::put('/{id}/status', [AutoBlogController::class, 'updateStatus']);
+});
+
+
+// Admin routes (no auth required for login)
+Route::prefix('admin')->group(function () {
+    Route::post('/login', [AdminAuthController::class, 'login']);
     
-    // Let other requests pass through
-    return response()->json([
-        'success' => false,
-        'message' => 'API route not found'
-    ], 404);
-});*/
+    // Protected admin routes
+    Route::middleware('auth:admin')->group(function () {
+        Route::post('/verify-session', [AdminAuthController::class, 'verifySession']);
+        Route::post('/logout', [AdminAuthController::class, 'logout']);
+        Route::get('/profile', [AdminAuthController::class, 'profile']);
+    });
+});
 
-// Add this at the TOP of your routes/api.php (before other routes)
-Route::get('/{any}', function() {
-    return response()->json([
-        'success' => false,
-        'message' => 'GET method is not supported for API endpoints. Use POST instead.'
-    ], 405);
-})->where('any', '.*');
-
-// Or add a catch-all at the BOTTOM (after all routes)
-Route::any('{any}', function() {
-    return response()->json([
-        'success' => false,
-        'message' => 'API route not found or method not allowed'
-    ], 404);
-})->where('any', '.*');
 
 Route::get('/sanctum-test', function () {
     $user = \App\Models\User::first();
@@ -141,5 +151,3 @@ Route::get('/sanctum-quick-test', function () {
 });
 
 
-//Route::post('/send-otp', [OtpController::class, 'sendOtp'])
-    //->middleware('auth:sanctum');

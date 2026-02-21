@@ -17,16 +17,18 @@ class WalletController extends Controller
     {
         $user = $request->user();
         $wallet = Wallet::getOrCreateForUser($user->id);
+        $currentMonthYear  = now()->format('M Y'); // e.g., "Feb 2026"
         
         return response()->json([
             'success' => true,
             'data' => [
-                'life_time_earning' => number_format($wallet->life_time_earing, 2), // Changed
-                'available_balance' => number_format($wallet->available_balance, 2),
-                'pending_withdrawal' => number_format($wallet->pending_withdrawal, 2),
+                'life_time_earning' => $wallet->life_time_earing, // Changed
+                'available_balance' => $wallet->available_balance,
+                'pending_withdrawal' => $wallet->pending_withdrawal,
                 'currency' => $wallet->currency,
-                'total_earned' => number_format($wallet->total_earned, 2),
-                'total_withdrawn' => number_format($wallet->total_withdrawn, 2)
+                'total_earned' => $wallet->total_earned,
+                'total_withdrawn' => $wallet->total_withdrawn,
+                'current_month_year' => $currentMonthYear
             ]
         ]);
     }
@@ -38,13 +40,15 @@ class WalletController extends Controller
     {
         $user = $request->user();
         $wallet = Wallet::getOrCreateForUser($user->id);
+        $currentMonthYear  = now()->format('M Y'); // e.g., "Feb 2026"
         
         return response()->json([
             'success' => true,
             'data' => [
-                'life_time_earning' => number_format($wallet->life_time_earing, 2), // Changed
-                'available' => number_format($wallet->available_balance, 2),
-                'currency' => $wallet->currency
+                'life_time_earning' => $wallet->life_time_earing, // Changed
+                'available' => $wallet->available_balance,
+                'currency' => $wallet->currency,
+                'current_month_year' => $currentMonthYear
             ]
         ]);
     }
