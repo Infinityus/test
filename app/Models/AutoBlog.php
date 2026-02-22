@@ -68,7 +68,7 @@ class AutoBlog extends Model
     {
         // Check if user already has a pending blog
         $userPendingBlog = self::where('user_id', $userId)
-            ->where('data_submitted', 'no')
+            ->where('data_submitted', 'not published')
             ->first();
         
         if ($userPendingBlog) {
@@ -77,7 +77,7 @@ class AutoBlog extends Model
         
         // Get next available unassigned blog
         $nextBlog = self::whereNull('user_id')
-            ->where('data_submitted', 'no')
+            ->where('data_submitted', 'not published')
             ->orderBy('id', 'asc')
             ->first();
         
@@ -99,7 +99,7 @@ class AutoBlog extends Model
      */
     public function scopePending($query)
     {
-        return $query->where('data_submitted', 'no');
+        return $query->where('data_submitted', 'not published');
     }
 
     /**
@@ -107,7 +107,7 @@ class AutoBlog extends Model
      */
     public function scopeCompleted($query)
     {
-        return $query->where('data_submitted', 'yes');
+        return $query->where('data_submitted', 'published');
     }
 
     /**

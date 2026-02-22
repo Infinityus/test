@@ -17,6 +17,7 @@ class Publish extends Model
         'blog_id',
         'status',
         'views',
+        'actions',
         'conversion_rate',
         'published_at',
         'scheduled_at',

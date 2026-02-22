@@ -7,10 +7,10 @@
 
     # Block direct browser access to API endpoints
     # Allow if request has X-Requested-From header with value 'flutter_app'
-    RewriteCond %{HTTP:X-Requested-From} !^flutter_app$ [NC]
-    RewriteCond %{HTTP_USER_AGENT} "Mozilla|Chrome|Safari|Firefox|Opera|MSIE|Trident|Edge" [NC]
-    RewriteCond %{REQUEST_URI} ^/api/ [NC]
-    RewriteRule ^ - [F,L]
+    # RewriteCond %{HTTP:X-Requested-From} !^flutter_app$ [NC]
+    # RewriteCond %{HTTP_USER_AGENT} "Mozilla|Chrome|Safari|Firefox|Opera|MSIE|Trident|Edge" [NC]
+    #RewriteCond %{REQUEST_URI} ^/api/ [NC]
+    # RewriteRule ^ - [F,L]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .

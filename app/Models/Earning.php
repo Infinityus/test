@@ -57,4 +57,31 @@ class Earning extends Model
     {
         return $query->where('blog_status', 'paid');
     }
+
+    public function scopeLastDays($query, $days)
+    {
+        return $query->where('earned_at', '>=', now()->subDays($days));
+    }
+
+    public function scopeLast7Days($query)
+    {
+        return $query->where('earned_at', '>=', now()->subDays(7));
+    }
+
+    public function scopeLast30Days($query)
+    {
+        return $query->where('earned_at', '>=', now()->subDays(30));
+    }
+
+    public function scopeThisMonth($query)
+    {
+        return $query->whereMonth('earned_at', now()->month)
+                     ->whereYear('earned_at', now()->year);
+    }
+
+    public function scopeLastMonth($query)
+    {
+        return $query->whereMonth('earned_at', now()->subMonth()->month)
+                     ->whereYear('earned_at', now()->subMonth()->year);
+    }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CertificateController;
 use App\Http\Controllers\Api\PublishController;
 use App\Http\Controllers\Api\AdminAuthController;
 use App\Http\Controllers\Api\AutoBlogController;
+use App\Http\Controllers\Api\EarningController;
 use Carbon\Carbon;
 
 
@@ -30,48 +31,12 @@ Route::prefix('v2')->group(function () {
     
     Route::post('/verify-session', [AuthController::class, 'verifySession'])->middleware('auth:sanctum');
     Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
-    
-    Route::get('/test', function (Request $request) {
-        return response()->json([
-            'message' => 'API is working!',
-            'server_time' => now()->toDateTimeString(),
-            'environment' => app()->environment(),
-        ]);
-    });
-    
-    // Test route to print current time (IST)
-    Route::get('/test-time', function () {
-        return response()->json([
-            'current_time_ist'     => now()->toDateTimeString(),
-            'timezone_config'      => config('app.timezone'),
-            'carbon_now'           => Carbon::now()->toDateTimeString(),
-            'carbon_now_explicit'  => Carbon::now('Asia/Kolkata')->toDateTimeString(),
-            'server_timestamp'     => time(),
-            'human_readable'       => now()->format('d M Y, h:i A'),
-        ]);
-    });
-
 });
 
 Route::prefix('user')->middleware('auth:sanctum')->group(function () {
     // Get authenticated user details
     Route::get('/', [AuthController::class, 'user']);
-    Route::get('/profile', [AuthController::class, 'user']); // Alias
-    
-    // Update profile
-    Route::put('/profile', [AuthController::class, 'updateProfile']);
-    Route::patch('/profile', [AuthController::class, 'updateProfile']);
-    
-    // Logout
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/logout-all', [AuthController::class, 'logoutAll']);
-    
-    // Devices and history
-    Route::get('/devices', [AuthController::class, 'devices']);
-    Route::get('/history', [AuthController::class, 'loginHistory']);
-    
-    // Password (if implemented)
-    Route::post('/change-password', [AuthController::class, 'changePassword']);
+    Route::get('/profile', [AuthController::class, 'user']);
 });
 
 Route::prefix('wallet')->middleware('auth:sanctum')->group(function () {
@@ -90,12 +55,8 @@ Route::prefix('certificates')->middleware('auth:sanctum')->group(function () {
 
 // Publish routes (protected)
 Route::prefix('publishes')->middleware('auth:sanctum')->group(function () {
-    Route::get('/', [PublishController::class, 'index']);
     Route::get('/analytics', [PublishController::class, 'analytics']);
-    Route::get('/{id}', [PublishController::class, 'show']);
-    Route::post('/', [PublishController::class, 'store']);
-    Route::put('/{id}/status', [PublishController::class, 'updateStatus']);
-    Route::post('/{id}/views', [PublishController::class, 'incrementViews']);
+    Route::get('/recent-activity', [PublishController::class, 'recentActivity']);
 });
 
 // Auto Blog routes (protected)
@@ -104,6 +65,14 @@ Route::prefix('blog')->middleware('auth:sanctum')->group(function () {
     Route::get('/history', [AutoBlogController::class, 'userHistory']);
     Route::get('/{id}', [AutoBlogController::class, 'show']);
     Route::put('/{id}/status', [AutoBlogController::class, 'updateStatus']);
+});
+
+// Earning routes (protected)
+Route::prefix('earnings')->middleware('auth:sanctum')->group(function () {
+    Route::get('/last-7-days', [EarningController::class, 'last7Days']);
+    Route::get('/last-15-days', [EarningController::class, 'last15Days']);
+    Route::get('/last-30-days', [EarningController::class, 'last30Days']);
+    Route::get('/last-60-days', [EarningController::class, 'last60Days']);
 });
 
 
@@ -117,37 +86,6 @@ Route::prefix('admin')->group(function () {
         Route::post('/logout', [AdminAuthController::class, 'logout']);
         Route::get('/profile', [AdminAuthController::class, 'profile']);
     });
-});
-
-
-Route::get('/sanctum-test', function () {
-    $user = \App\Models\User::first();
-
-    if (!$user) {
-        return response()->json(['error' => 'No user found in tbl_user']);
-    }
-
-    $token = $user->createToken('test-token')->plainTextToken;
-
-    return response()->json([
-        'message' => 'Sanctum is now working!',
-        'token'   => $token
-    ]);
-});
-
-Route::get('/sanctum-quick-test', function () {
-    $user = \App\Models\User::first();
-
-    if (!$user) {
-        return response()->json(['error' => 'No user found in tbl_user table']);
-    }
-
-    $token = $user->createToken('quick-test')->plainTextToken;
-
-    return response()->json([
-        'message' => 'Sanctum works now!',
-        'token'   => $token
-    ]);
 });
 
 
