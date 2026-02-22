@@ -28,7 +28,7 @@ class AuthController extends Controller
         $user = $request->user();
         $oldToken = $this->extractTokenFromRequest($request);
         Log::info('verifySession', [
-            'user' => $user,
+            'user' => $user->mobile,
             'old_token' => $oldToken,
             'time' => now()->format('Y-m-d H:i:s')
         ]);
@@ -42,8 +42,18 @@ class AuthController extends Controller
                 'message' => 'Invalid token'
             ], 401);
         }
+        Log::info('Check-tokens', [
+                'db_token' => $user->token,
+                'received_token' => $currentToken,
+                'time' => now()->format('Y-m-d H:i:s')
+            ]);
         
         if ($user->token !== $currentToken) {
+            Log::info('Session expired', [
+                'db_token' => $user->token,
+                'received_token' => $currentToken,
+                'time' => now()->format('Y-m-d H:i:s')
+            ]);
             // Token mismatch - delete this token as it's not the active one
             $tokenModel->delete();
             return response()->json([
@@ -96,12 +106,6 @@ class AuthController extends Controller
     {
         // Get token from request
         $oldToken = $this->extractTokenFromRequest($request);
-        Log::info('refreshToken', [
-            'old_token' => $oldToken,
-            'time' => now()->format('Y-m-d H:i:s')
-        ]);
-
-
         
         if (!$oldToken) {
             return $this->errorResponse('Token is required', 400);
@@ -128,10 +132,10 @@ class AuthController extends Controller
         }
         
         $oldToken = $this->extractTokenFromRequest($request);
-        Log::info('refreshToken', [
+        /*Log::info('refreshToken', [
             'user' => $user,
             'time' => now()->format('Y-m-d H:i:s')
-        ]);
+        ]);*/
         
         // 🔴 NEW VALIDATION: Check if old token matches tbl_user.token
         if ($user->token !== $oldToken) {
@@ -160,6 +164,12 @@ class AuthController extends Controller
         
         // Delete old token
         $tokenModel->delete();
+        
+        Log::info('refreshToken', [
+            'old_token from refresh' => $oldToken,
+            'new-token' => $newToken,
+            'time' => now()->format('Y-m-d H:i:s')
+        ]);
         
         return response()->json([
             'success' => true,
@@ -234,142 +244,4 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Update user profile
-     */
-    public function updateProfile(Request $request): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|string|max:255',
-            'device_name' => 'sometimes|string'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $user = $request->user();
-        if ($request->has('name')) {
-            $user->name = $request->name;
-        }
-        if ($request->has('device_name')) {
-            $user->device_name = $request->device_name;
-        }
-        $user->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Profile updated successfully',
-            'data' => $user
-        ]);
-    }
-
-    /**
-     * Logout (revoke token)
-     */
-    public function logout(Request $request): JsonResponse
-    {
-        // Revoke current token
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Logged out successfully'
-        ]);
-    }
-
-    /**
-     * Logout from all devices (revoke all tokens)
-     */
-    public function logoutAll(Request $request): JsonResponse
-    {
-        // Revoke all tokens for this user
-        $request->user()->tokens()->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Logged out from all devices successfully'
-        ]);
-    }
-
-    /**
-     * Get user devices history
-     */
-    public function devices(Request $request): JsonResponse
-    {
-        $devices = $request->user()->devices()
-            ->orderBy('last_used_at', 'desc')
-            ->get(['id', 'device_name', 'device_type', 'device_os', 'last_used_at', 'waiting_time']);
-
-        return response()->json([
-            'success' => true,
-            'data' => $devices
-        ]);
-    }
-
-    /**
-     * Get user login history
-     */
-    public function loginHistory(Request $request): JsonResponse
-    {
-        $history = \App\Models\DeviceHistory::where('user_id', $request->user()->id)
-            ->orderBy('created_at', 'desc')
-            ->limit(20)
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $history
-        ]);
-    }
-
-    /**
-     * Change password (if you add password field later)
-     */
-    public function changePassword(Request $request): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'current_password' => 'required|string',
-            'new_password' => 'required|string|min:6|confirmed'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $user = $request->user();
-
-        // Check if user has password (if you add this feature)
-        if (!$user->password) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Password not set for this account'
-            ], 400);
-        }
-
-        // Verify current password
-        if (!Hash::check($request->current_password, $user->password)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Current password is incorrect'
-            ], 401);
-        }
-
-        // Update password
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Password changed successfully'
-        ]);
-    }
 }

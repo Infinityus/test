@@ -7,6 +7,7 @@ use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Carbon\Carbon;
 
 class WalletController extends Controller
 {
@@ -41,6 +42,11 @@ class WalletController extends Controller
         $user = $request->user();
         $wallet = Wallet::getOrCreateForUser($user->id);
         $currentMonthYear  = now()->format('M Y'); // e.g., "Feb 2026"
+        //$nextPayout = $wallet->next_payout; 
+        $nextPayout = null;
+        if ($wallet->next_payout) {
+            $nextPayout = Carbon::parse($wallet->next_payout)->format('l, M j, Y'); // e.g., "Friday, Feb 22, 2026"
+        }
         
         return response()->json([
             'success' => true,
@@ -48,7 +54,8 @@ class WalletController extends Controller
                 'life_time_earning' => $wallet->life_time_earing, // Changed
                 'available' => $wallet->available_balance,
                 'currency' => $wallet->currency,
-                'current_month_year' => $currentMonthYear
+                'current_month_year' => $currentMonthYear,
+                'next_payout' => $nextPayout
             ]
         ]);
     }
